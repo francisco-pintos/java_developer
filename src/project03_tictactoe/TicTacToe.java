@@ -12,6 +12,10 @@ public class TicTacToe {
 
         // Print the game grid array
         printGameGrid(gameArray);
+
+        // Print the game state
+        String gameState = analyzeGameState(gameArray);
+        System.out.println(gameState);
     }
 
     public static int[][] getInputCells() {
@@ -89,7 +93,7 @@ public class TicTacToe {
             for (int col = 0; col < cols; col++) {
                 switch (row[col]) {
                     case 0:
-                        System.out.print(col == 0 ? "_" : " _");
+                        System.out.print(col == 0 ? " " : "  ");
                         break;
                     case 1:
                         System.out.print(col == 0 ? "X" : " X");
@@ -101,6 +105,131 @@ public class TicTacToe {
             System.out.println(" |");
         }
         System.out.println("---------");
+    }
+
+    public static String analyzeGameState(int[][] gameArray) {
+
+        // Get the grid dimensions
+        int rows = gameArray.length;
+        int cols = gameArray[0].length;
+
+        // Check for the number of the symbols (difference < 2)
+        int sum0 = 0;
+        int sum1 = 0;
+        int sum2 = 0;
+        for (int[] row : gameArray) {
+            for (int item : row) {
+                switch (item) {
+                    case 0:
+                        sum0++;
+                        break;
+                    case 1:
+                        sum1++;
+                        break;
+                    case 2:
+                        sum2++;
+                        break;
+                }
+            }
+        }
+        if (sum0 + sum1 + sum2 != 9) {
+            return "Impossible";
+        }
+        if (sum1 - sum2 > 1 || sum2 - sum1 > 1) {
+            return "Impossible";
+        }
+
+        // Check for three in a row
+        int rows1 = 0;
+        int rows2 = 0;
+        for (int k = 1; k <= 2; k++) {
+            // Check in rows
+            for (int[] row : gameArray) {
+                boolean allEqual = true;
+                for (int item : row) {
+                    if (item != k) {
+                        allEqual = false;
+                        break;
+                    }
+                }
+                if (allEqual) {
+                    if (k == 1) {
+                        rows1++;
+                    } else {
+                        rows2++;
+                    }
+                }
+            }
+            // Check in columns
+            for (int col = 0; col < cols; col++) {
+                boolean allEqual = true;
+                //noinspection ForLoopReplaceableByForEach
+                for (int row = 0; row < rows; row++) {
+                    if (gameArray[row][col] != k) {
+                        allEqual = false;
+                        break;
+                    }
+                }
+                if (allEqual) {
+                    if (k == 1) {
+                        rows1++;
+                    } else {
+                        rows2++;
+                    }
+                }
+            }
+            // Check in principal diagonal
+            boolean allEqual = true;
+            for (int row = 0; row < rows; row++) {
+                if (gameArray[row][row] != k) {
+                    allEqual = false;
+                    break;
+                }
+            }
+            if (allEqual) {
+                if (k == 1) {
+                    rows1++;
+                } else {
+                    rows2++;
+                }
+            }
+            // Check in other diagonal
+            allEqual = true;
+            for (int row = 0; row < rows; row++) {
+                if (gameArray[row][rows - row - 1] != k) {
+                    allEqual = false;
+                    break;
+                }
+            }
+            if (allEqual) {
+                if (k == 1) {
+                    rows1++;
+                } else {
+                    rows2++;
+                }
+            }
+        }
+
+        // Check for several diagonals
+        if (rows1 + rows2 > 1) {
+            return "Impossible";
+        }
+
+        // Check for one winner
+        if (rows1 == 1) {
+            return "X wins";
+        }
+        if (rows2 == 1) {
+            return "O wins";
+        }
+
+        // Check for draw
+        if (sum0 == 0) {
+            return "Draw";
+        }
+
+        // If not any other state, game not finished
+        return "Game not finished";
     }
 
 }
