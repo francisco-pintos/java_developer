@@ -1,8 +1,10 @@
+package project03_tictactoe;
+
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class Main {
+public class TicTacToe {
 
     public static void main(String[] args) {
         // Get the game grid array
